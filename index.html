@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🚀 Email Constructor Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -25,8 +26,11 @@
             --text-primary: #0d1117;
             --text-secondary: #666;
             --border: #e1e4e8;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         body {
@@ -34,40 +38,61 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-            transition: background 0.3s;
+            transition: background 0.3s, filter 0.3s;
         }
 
         body.dark-mode {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
 
+        /* Высокий контраст режим */
+        body.high-contrast {
+            --primary: #000;
+            --secondary: #000;
+            --bg-light: #fff;
+            --bg-gray: #f0f0f0;
+            --text-primary: #000;
+            --border: #000;
+        }
+
+        body.high-contrast.dark-mode {
+            --primary: #fff;
+            --secondary: #fff;
+            --bg-light: #000;
+            --bg-gray: #1a1a1a;
+            --text-primary: #fff;
+            --border: #fff;
+        }
+
         .app-container {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
         }
 
         /* HEADER */
         .app-header {
             background: var(--bg-light);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 24px 32px;
             margin-bottom: 24px;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-lg);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         body.dark-mode .app-header {
-            background: #1e1e2e;
+            background: rgba(30, 30, 46, 0.8);
             color: #fff;
         }
 
         .app-title {
-            font-size: 28px;
-            font-weight: 800;
+            font-size: 32px;
+            font-weight: 900;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -75,6 +100,18 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-title span:first-child {
+            font-size: 40px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         .app-controls {
@@ -85,30 +122,36 @@
 
         .icon-btn {
             background: var(--bg-gray);
-            border: 1px solid var(--border);
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            border: 2px solid var(--border);
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             color: var(--text-primary);
-            font-size: 16px;
+            font-size: 18px;
+            position: relative;
         }
 
         body.dark-mode .icon-btn {
-            background: #2a2a3e;
+            background: rgba(42, 42, 62, 0.8);
             border-color: #404050;
             color: #fff;
         }
 
         .icon-btn:hover {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            border-color: var(--primary);
-            transform: scale(1.05);
+            border-color: transparent;
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .icon-btn:active {
+            transform: scale(0.95);
         }
 
         /* MAIN GRID */
@@ -121,79 +164,167 @@
 
         .panel {
             background: var(--bg-light);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 28px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         body.dark-mode .panel {
-            background: #1e1e2e;
+            background: rgba(30, 30, 46, 0.8);
             color: #fff;
         }
 
         .panel:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-4px);
         }
 
         .panel-header {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 2px solid var(--border);
+            border-bottom: 3px solid var(--primary);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            letter-spacing: -0.5px;
         }
 
         body.dark-mode .panel-header {
-            border-bottom-color: #404050;
+            border-bottom-color: var(--primary);
         }
 
         .panel-header-icon {
-            font-size: 20px;
+            font-size: 24px;
+            margin-right: 8px;
+            display: inline-block;
+            animation: rotate 3s linear infinite;
+        }
+
+        .panel-header-icon:hover {
+            animation: none;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes rotateOnClick {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .panel-header-icon.clicked {
+            animation: rotateOnClick 0.6s ease;
         }
 
         /* LANGUAGE SELECTOR */
         .language-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 24px;
         }
 
         .lang-btn {
-            padding: 14px 16px;
+            padding: 16px 20px;
             border: 2px solid var(--border);
             background: var(--bg-gray);
             color: var(--text-primary);
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
         }
 
         body.dark-mode .lang-btn {
-            background: #2a2a3e;
+            background: rgba(42, 42, 62, 0.8);
             border-color: #404050;
             color: #fff;
         }
 
+        .lang-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
         .lang-btn:hover {
             border-color: var(--primary);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .lang-btn:hover::before {
+            left: 100%;
         }
 
         .lang-btn.active {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border-color: transparent;
-            box-shadow: 0 4px 12px rgba(9, 105, 218, 0.4);
+            box-shadow: 0 8px 20px rgba(9, 105, 218, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* INPUT ПОЛЯ */
+        .custom-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-primary);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            margin-bottom: 12px;
+        }
+
+        body.dark-mode .custom-input {
+            background: rgba(42, 42, 62, 0.6);
+            color: #fff;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+            transform: scale(1.02);
+        }
+
+        .custom-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* REASONS SECTION */
@@ -208,59 +339,76 @@
             padding: 16px;
             border: 2px solid var(--border);
             background: var(--bg-gray);
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 12px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
         }
 
         body.dark-mode .reason-card {
-            background: #2a2a3e;
+            background: rgba(42, 42, 62, 0.8);
             border-color: #404050;
+        }
+
+        .reason-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
         }
 
         .reason-card:hover {
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(9, 105, 218, 0.05), rgba(110, 64, 170, 0.05));
-            transform: translateX(4px);
+            transform: translateX(6px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .reason-card:hover::before {
+            left: 100%;
         }
 
         .reason-card.selected {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border-color: transparent;
-            box-shadow: 0 4px 12px rgba(9, 105, 218, 0.4);
+            box-shadow: var(--shadow-lg);
+            animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .reason-card::before {
+        .reason-card::after {
             content: '✓';
             font-size: 18px;
             font-weight: bold;
             opacity: 0;
-            transition: opacity 0.2s;
+            transition: opacity 0.3s, transform 0.3s;
             width: 24px;
             text-align: center;
+            margin-left: auto;
+            order: 10;
         }
 
-        .reason-card.selected::before {
+        .reason-card.selected::after {
             opacity: 1;
+            transform: scale(1.2);
         }
 
         /* DOCUMENT TYPES */
-        .document-section {
-            margin-top: 20px;
-        }
-
         .document-type-btn {
             width: 100%;
-            padding: 14px 16px;
+            padding: 16px 18px;
             border: 2px solid var(--border);
             background: var(--bg-gray);
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 700;
             transition: all 0.3s;
@@ -268,16 +416,18 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
         }
 
         body.dark-mode .document-type-btn {
-            background: #2a2a3e;
+            background: rgba(42, 42, 62, 0.8);
             border-color: #404050;
         }
 
         .document-type-btn:hover {
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(9, 105, 218, 0.05), rgba(110, 64, 170, 0.05));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .document-type-btn.open {
@@ -286,8 +436,8 @@
         }
 
         .toggle-icon {
-            transition: transform 0.3s;
-            font-size: 14px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 16px;
         }
 
         .document-type-btn.open .toggle-icon {
@@ -297,16 +447,28 @@
         .subtypes-container {
             display: none;
             margin-bottom: 12px;
-            padding: 12px;
+            padding: 14px;
             background: var(--bg-gray);
-            border-radius: 8px;
-            border-left: 3px solid var(--primary);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
             grid-template-columns: 1fr 1fr;
             gap: 8px;
+            animation: slideDown 0.3s ease;
         }
 
         body.dark-mode .subtypes-container {
-            background: #2a2a3e;
+            background: rgba(42, 42, 62, 0.6);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .subtypes-container.show {
@@ -314,26 +476,27 @@
         }
 
         .subtype-btn {
-            padding: 10px 12px;
-            border: 1px solid var(--border);
+            padding: 12px 14px;
+            border: 2px solid var(--border);
             background: white;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
             transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
         }
 
         body.dark-mode .subtype-btn {
-            background: #1e1e2e;
+            background: rgba(30, 30, 46, 0.8);
             border-color: #404050;
             color: #fff;
         }
 
         .subtype-btn:hover {
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(110, 64, 170, 0.1));
-            transform: scale(1.02);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
         }
 
         .subtype-btn.selected {
@@ -353,14 +516,15 @@
         .badge {
             background: linear-gradient(135deg, rgba(9, 105, 218, 0.15), rgba(110, 64, 170, 0.15));
             color: var(--primary);
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 13px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             border: 1px solid rgba(9, 105, 218, 0.3);
             animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
 
         body.dark-mode .badge {
@@ -368,59 +532,79 @@
             color: #4da3ff;
         }
 
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-15px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
         .badge .remove {
             cursor: pointer;
             font-weight: bold;
-            opacity: 0.7;
-            transition: opacity 0.2s;
+            opacity: 0.6;
+            transition: all 0.2s;
             background: none;
             border: none;
             padding: 0;
             font-size: 14px;
             line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
         }
 
         .badge .remove:hover {
             opacity: 1;
+            transform: scale(1.2) rotate(90deg);
         }
 
         /* TEMPLATE PREVIEW */
         .template-box {
             background: var(--bg-light);
             border: 2px solid var(--border);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 0;
             display: flex;
             flex-direction: column;
             height: 100%;
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
         }
 
         body.dark-mode .template-box {
-            background: #1e1e2e;
+            background: rgba(30, 30, 46, 0.8);
             border-color: #404050;
         }
 
         .template-header {
-            padding: 16px;
+            padding: 18px;
             border-bottom: 2px solid var(--border);
-            font-weight: 700;
-            background: var(--bg-gray);
+            font-weight: 800;
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(110, 64, 170, 0.1));
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         body.dark-mode .template-header {
-            background: #2a2a3e;
+            background: rgba(42, 42, 62, 0.6);
             border-color: #404050;
         }
 
         .template-content {
-            padding: 16px;
+            padding: 18px;
             flex: 1;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.8;
             color: var(--text-primary);
             white-space: pre-wrap;
@@ -432,7 +616,7 @@
         }
 
         body.dark-mode .template-content {
-            background: #141420;
+            background: rgba(20, 20, 32, 0.8);
             color: #e0e0e0;
         }
 
@@ -444,158 +628,213 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            opacity: 0.6;
+            opacity: 0.5;
+            font-size: 16px;
         }
 
         .template-actions {
             display: flex;
             gap: 8px;
-            padding: 12px;
+            padding: 14px;
             border-top: 2px solid var(--border);
             background: var(--bg-gray);
         }
 
         body.dark-mode .template-actions {
-            background: #2a2a3e;
+            background: rgba(42, 42, 62, 0.6);
             border-color: #404050;
         }
 
         .action-btn {
             flex: 1;
-            padding: 10px;
-            background: var(--primary);
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
         }
 
         .action-btn:hover:not(:disabled) {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(9, 105, 218, 0.4);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .action-btn:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
         }
 
         .action-btn:disabled {
             background: #ccc;
             cursor: not-allowed;
             opacity: 0.6;
+            box-shadow: var(--shadow-sm);
         }
 
-        .action-btn.secondary {
-            background: var(--secondary);
-        }
-
-        .action-btn.secondary:hover:not(:disabled) {
-            background: #5e38a1;
-        }
-
-        /* HISTORY PANEL */
-        .history-list {
+        /* CUSTOM VARIANTS SECTION */
+        .variant-form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .history-item {
-            padding: 12px;
-            background: var(--bg-gray);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-left: 3px solid var(--border);
-            position: relative;
-        }
-
-        body.dark-mode .history-item {
-            background: #2a2a3e;
-        }
-
-        .history-item:hover {
-            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(110, 64, 170, 0.1));
-            border-left-color: var(--primary);
-            transform: translateX(4px);
-        }
-
-        .history-item-text {
-            font-size: 12px;
-            max-height: 60px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: pre-wrap;
-            opacity: 0.8;
-        }
-
-        .history-item-time {
-            font-size: 10px;
-            opacity: 0.5;
-            margin-top: 6px;
-        }
-
-        .history-item-delete {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            background: var(--danger);
-            color: white;
-            border: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s;
-            font-size: 10px;
-        }
-
-        .history-item:hover .history-item-delete {
-            opacity: 1;
-        }
-
-        /* TEMPLATES MODAL */
-        .templates-grid {
-            display: grid;
-            grid-template-columns: 1fr;
             gap: 12px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--bg-gray);
+            border-radius: 12px;
+            border: 2px dashed var(--border);
         }
 
-        .template-card {
-            padding: 14px;
-            background: var(--bg-gray);
+        body.dark-mode .variant-form {
+            background: rgba(42, 42, 62, 0.6);
+        }
+
+        .variant-form input {
+            padding: 12px;
             border: 2px solid var(--border);
             border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: white;
+            font-size: 13px;
         }
 
-        body.dark-mode .template-card {
-            background: #2a2a3e;
+        body.dark-mode .variant-form input {
+            background: rgba(30, 30, 46, 0.8);
+            color: #fff;
             border-color: #404050;
         }
 
-        .template-card:hover {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(110, 64, 170, 0.1));
-            transform: translateX(4px);
+        .variant-form textarea {
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            font-size: 13px;
+            font-family: 'Monaco', monospace;
+            resize: vertical;
+            min-height: 100px;
         }
 
-        .template-card-title {
+        body.dark-mode .variant-form textarea {
+            background: rgba(30, 30, 46, 0.8);
+            color: #fff;
+            border-color: #404050;
+        }
+
+        .variant-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .variant-item {
+            padding: 12px;
+            background: var(--bg-gray);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        body.dark-mode .variant-item {
+            background: rgba(42, 42, 62, 0.6);
+        }
+
+        .variant-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .variant-name {
             font-weight: 700;
+            font-size: 13px;
             margin-bottom: 4px;
         }
 
-        .template-card-desc {
+        .variant-text {
             font-size: 12px;
-            opacity: 0.6;
+            opacity: 0.7;
+            max-height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .variant-delete {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            float: right;
+            transition: all 0.2s;
+        }
+
+        .variant-delete:hover {
+            background: #c12630;
+            transform: scale(1.1);
+        }
+
+        /* STATISTICS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
         }
 
         /* MODAL */
@@ -606,10 +845,17 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal.show {
@@ -618,14 +864,15 @@
 
         .modal-content {
             background: var(--bg-light);
-            border-radius: 12px;
-            padding: 28px;
-            max-width: 500px;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.3s ease;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
         }
 
         body.dark-mode .modal-content {
@@ -633,43 +880,87 @@
             color: #fff;
         }
 
-        .modal-close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: opacity 0.2s;
-        }
-
-        .modal-close:hover {
-            opacity: 1;
-        }
-
-        /* ANIMATIONS */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--bg-gray);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .modal-close {
+            background: #2a2a3e;
+        }
+
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-gray);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #2a2a3e;
+        }
+
+        .disabled-section {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .high-contrast .modal-content {
+            border: 3px solid var(--text-primary);
+        }
+
+        .high-contrast .panel {
+            border-width: 3px;
+        }
+
+        .high-contrast .action-btn {
+            border: 2px solid var(--text-primary);
         }
 
         /* RESPONSIVE */
@@ -689,66 +980,41 @@
                 text-align: center;
             }
 
+            .app-title {
+                font-size: 24px;
+            }
+
             .language-selector {
                 grid-template-columns: 1fr;
             }
+
+            .panel {
+                padding: 20px;
+            }
         }
 
-        /* SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-gray);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
-
-        body.dark-mode ::-webkit-scrollbar-track {
-            background: #2a2a3e;
-        }
-
-        body.dark-mode ::-webkit-scrollbar-thumb {
-            background: #404050;
-        }
-
-        .disabled-section {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
+        /* CONFETTI */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: confettiFall 2s ease-out forwards;
         }
 
-        .stat-value {
-            font-size: 24px;
-            font-weight: 800;
+        @keyframes confettiFall {
+            to {
+                transform: translateY(800px) translateX(var(--tx)) rotate(360deg);
+                opacity: 0;
+            }
         }
 
-        .stat-label {
-            font-size: 12px;
-            opacity: 0.9;
-            margin-top: 4px;
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -761,14 +1027,17 @@
                 <span>Email Constructor Pro</span>
             </div>
             <div class="app-controls">
-                <button class="icon-btn" id="templatesBtn" title="Шаблоны">
-                    <i class="fas fa-file-alt"></i>
+                <button class="icon-btn" id="variantsBtn" title="Мои варианты">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="icon-btn" id="statsBtn" title="Статистика">
+                    <i class="fas fa-chart-bar"></i>
                 </button>
                 <button class="icon-btn" id="historyBtn" title="История">
                     <i class="fas fa-history"></i>
                 </button>
-                <button class="icon-btn" id="settingsBtn" title="Настройки">
-                    <i class="fas fa-cog"></i>
+                <button class="icon-btn" id="accessibilityBtn" title="Доступность">
+                    <i class="fas fa-universal-access"></i>
                 </button>
                 <button class="icon-btn" id="darkModeBtn" title="Темная тема">
                     <i class="fas fa-moon"></i>
@@ -803,7 +1072,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-value" id="reasonCount">0</div>
-                        <div class="stat-label">Причин выбрано</div>
+                        <div class="stat-label">Причин</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="docCount">0</div>
@@ -830,7 +1099,7 @@
                         <button class="action-btn" id="copyBtn" disabled>
                             <i class="fas fa-copy"></i> Копировать
                         </button>
-                        <button class="action-btn secondary" id="downloadBtn" disabled>
+                        <button class="action-btn" id="downloadBtn" disabled>
                             <i class="fas fa-download"></i> Скачать
                         </button>
                     </div>
@@ -840,22 +1109,105 @@
     </div>
 
     <!-- MODALS -->
-    <div class="modal" id="templatesModal">
+    <!-- Variables Modal -->
+    <div class="modal" id="variablesModal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('templatesModal')">✕</button>
-            <h2 style="margin-bottom: 20px;">📋 Готовые шаблоны</h2>
-            <div class="templates-grid" id="templatesGrid"></div>
+            <button class="modal-close" onclick="closeModal('variablesModal')">✕</button>
+            <h2>🎯 Кастомные переменные</h2>
+            <p style="margin-bottom: 16px; opacity: 0.7; font-size: 14px;">Используйте {{переменная}} в текстах для автозаполнения</p>
+            <div class="variant-form">
+                <input type="text" id="varName" class="custom-input" placeholder="Имя переменной (например: client_name)">
+                <input type="text" id="varValue" class="custom-input" placeholder="Значение (например: Иван)">
+                <button class="action-btn" onclick="addVariable()" style="margin-top: 8px;">
+                    <i class="fas fa-plus"></i> Добавить переменную
+                </button>
+            </div>
+            <div id="variablesList" style="margin-top: 20px;"></div>
         </div>
     </div>
 
+    <!-- Custom Variants Modal -->
+    <div class="modal" id="variantsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('variantsModal')">✕</button>
+            <h2>✏️ Мои варианты текстов</h2>
+            <div class="variant-form">
+                <input type="text" id="variantName" class="custom-input" placeholder="Название варианта">
+                <textarea id="variantText" placeholder="Текст варианта. Используйте {{переменная}} для подстановки"></textarea>
+                <button class="action-btn" onclick="saveVariant()" style="margin-top: 8px;">
+                    <i class="fas fa-save"></i> Сохранить вариант
+                </button>
+            </div>
+            <h3 style="margin-top: 24px; margin-bottom: 12px;">Сохранённые варианты:</h3>
+            <div class="variant-list" id="variantsList"></div>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('statsModal')">✕</button>
+            <h2>📊 Статистика</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 12px;">Использование по дням</h3>
+                <div class="chart-container">
+                    <canvas id="statsChart"></canvas>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 12px;">Самые используемые комбинации</h3>
+                <div id="topCombinations"></div>
+            </div>
+
+            <div>
+                <h3 style="margin-bottom: 12px;">Общая статистика</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalUses">0</div>
+                        <div class="stat-label">Всего писем</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalChars">0</div>
+                        <div class="stat-label">Символов</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
     <div class="modal" id="historyModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('historyModal')">✕</button>
-            <h2 style="margin-bottom: 20px;">📜 История писем</h2>
-            <div class="history-list" id="historyList"></div>
+            <h2>📜 История писем</h2>
+            <div class="variant-list" id="historyList"></div>
             <button class="action-btn" style="width: 100%; margin-top: 20px;" onclick="clearHistory()">
                 <i class="fas fa-trash"></i> Очистить историю
             </button>
+        </div>
+    </div>
+
+    <!-- Accessibility Modal -->
+    <div class="modal" id="accessibilityModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('accessibilityModal')">✕</button>
+            <h2>♿ Доступность</h2>
+            <div style="margin-top: 20px;">
+                <label style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; cursor: pointer;">
+                    <input type="checkbox" id="highContrastToggle" style="width: 18px; height: 18px; cursor: pointer;">
+                    <span>Высокий контраст</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; cursor: pointer;">
+                    <input type="checkbox" id="reducedMotionToggle" style="width: 18px; height: 18px; cursor: pointer;">
+                    <span>Уменьшить анимации</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                    <input type="checkbox" id="largeTextToggle" style="width: 18px; height: 18px; cursor: pointer;">
+                    <span>Увеличить шрифт</span>
+                </label>
+            </div>
         </div>
     </div>
 
@@ -863,8 +1215,8 @@
         const data = {
             reasons: {
                 'digital_document': {
-                    ru: 'Мы не можем принять предоставленный Вами документ, так как сканированные копии документов / снимки экрана / электронные документы не идентифицируются. К проверке могут быть при��яты только фотографии оригиналов документов.',
-                    en: 'We cannot accept the document you have provided, as scanned copies of documents/screenshots/electronic documents are not identifiable. Only photographs of original documents can be accepted for verification.'
+                    ru: 'Мы не можем принять предоставленный Вами документ, так как сканированные копии документов / снимки экрана / электронные документы не идентифицируются. К проверке могут быть приняты только фотографии оригиналов документов.',
+                    en: 'We cannot accept the document you have provided, as scanned copies of documents/screenshots/electronic documents are not identifiable.'
                 },
                 'under_1mb': {
                     ru: 'К сожалению, мы не можем принять приложенную Вами фотографию, так как размер файла должен быть не менее 1 MB.',
@@ -872,23 +1224,18 @@
                 },
                 'cropped': {
                     ru: 'К сожалению, мы не можем принять предоставленную Вами фотографию, поскольку документ на ней представлен обрезанным / неполным.',
-                    en: 'Unfortunately, we cannot accept the photo you have provided because the document in it is cropped/incomplete.'
+                    en: 'Unfortunately, we cannot accept the photo provided because the document is cropped/incomplete.'
                 },
                 'low_quality': {
-                    ru: 'К сожалению, мы не можем принять : фотография предоставлена в низком качестве.',
+                    ru: 'К сожалению, мы не можем принять: фотография предоставлена в низком качестве.',
                     en: 'Unfortunately, we cannot accept this: the photo is of poor quality.'
-                },
-                'wrong_person': {
-                    ru: 'Документ должен принадлежать именно вам. На фото должны быть видны ваши черты лица.',
-                    en: 'The document must belong to you. Your facial features must be visible in the photo.'
                 }
             },
             reasonLabels: {
                 'digital_document': 'Digital document',
                 'under_1mb': 'Under 1MB',
                 'cropped': 'Cropped',
-                'low_quality': 'Low quality',
-                'wrong_person': 'Wrong person'
+                'low_quality': 'Low quality'
             },
             documentTypes: {
                 'photo_id': {
@@ -896,42 +1243,43 @@
                     subtypes: {
                         'p': {
                             label: 'P',
-                            ru: '• страницу внутреннего паспорта с фотографией (с номером и серией);',
-                            en: '• the page of your internal passport with your photo (with the number and series);'
+                            ru: '• страницу внутреннего паспорта с фотографией;',
+                            en: '• the page of your internal passport with your photo;'
                         },
                         'tp': {
                             label: 'TP',
-                            ru: '• страницу заграничного паспорта с фотографией (с номером и серией);',
-                            en: '• the page of your foreign passport with your photo (with the number and series);'
-                        },
-                        'license': {
-                            label: 'DL',
-                            ru: '• водительское удостоверение с фотографией;',
-                            en: '• driver\'s license with your photo;'
+                            ru: '• страницу заграничного паспорта с фотографией;',
+                            en: '• the page of your foreign passport with your photo;'
                         }
                     }
                 }
-            },
-            templates: [
-                { name: 'Стандартное письмо', reasons: ['digital_document'], docs: ['photo_id-p'] },
-                { name: 'Полная проверка', reasons: ['digital_document', 'low_quality'], docs: ['photo_id-p', 'photo_id-tp'] },
-                { name: 'Срочная переподача', reasons: ['cropped', 'under_1mb'], docs: ['photo_id-p'] }
-            ]
+            }
         };
 
         let state = {
             language: 'ru',
             selectedReasons: [],
             selectedDocuments: [],
-            history: JSON.parse(localStorage.getItem('emailHistory')) || []
+            history: JSON.parse(localStorage.getItem('emailHistory')) || [],
+            variants: JSON.parse(localStorage.getItem('emailVariants')) || [],
+            variables: JSON.parse(localStorage.getItem('emailVariables')) || {},
+            stats: JSON.parse(localStorage.getItem('emailStats')) || {},
+            combinations: JSON.parse(localStorage.getItem('combinations')) || {},
+            darkMode: localStorage.getItem('darkMode') === 'true',
+            highContrast: localStorage.getItem('highContrast') === 'true',
+            reducedMotion: localStorage.getItem('reducedMotion') === 'true',
+            largeText: localStorage.getItem('largeText') === 'true'
         };
+
+        let statsChart = null;
 
         function init() {
             renderReasons();
             renderDocumentTypes();
             setupEventListeners();
-            renderTemplates();
-            updateHistory();
+            loadAccessibilitySettings();
+            updateVariantsList();
+            updateVariablesList();
         }
 
         function setupEventListeners() {
@@ -944,26 +1292,33 @@
                 });
             });
 
-            document.getElementById('darkModeBtn').addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
+            document.getElementById('variantsBtn').addEventListener('click', () => openModal('variantsModal'));
+            document.getElementById('statsBtn').addEventListener('click', () => {
+                openModal('statsModal');
+                setTimeout(renderStatsChart, 300);
             });
-
             document.getElementById('historyBtn').addEventListener('click', () => {
                 openModal('historyModal');
-                updateHistory();
+                updateHistoryList();
             });
-
-            document.getElementById('templatesBtn').addEventListener('click', () => {
-                openModal('templatesModal');
-            });
+            document.getElementById('accessibilityBtn').addEventListener('click', () => openModal('accessibilityModal'));
 
             document.getElementById('copyBtn').addEventListener('click', copyTemplate);
             document.getElementById('downloadBtn').addEventListener('click', downloadTemplate);
 
-            if (localStorage.getItem('darkMode') === 'true') {
-                document.body.classList.add('dark-mode');
+            document.getElementById('highContrastToggle').addEventListener('change', toggleHighContrast);
+            document.getElementById('reducedMotionToggle').addEventListener('change', toggleReducedMotion);
+            document.getElementById('largeTextToggle').addEventListener('change', toggleLargeText);
+
+            if (state.darkMode) document.body.classList.add('dark-mode');
+            if (state.highContrast) document.body.classList.add('high-contrast');
+            if (state.reducedMotion) {
+                const style = document.createElement('style');
+                style.textContent = '* { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }';
+                document.head.appendChild(style);
             }
+            if (state.largeText) document.body.style.fontSize = '18px';
         }
 
         function renderReasons() {
@@ -977,6 +1332,7 @@
                 btn.dataset.reason = key;
 
                 btn.addEventListener('click', function() {
+                    animateIcon(this);
                     const index = state.selectedReasons.indexOf(key);
                     if (index === -1) {
                         state.selectedReasons.push(key);
@@ -1127,6 +1483,8 @@
                 });
             }
 
+            let finalTemplate = replaceVariables(template);
+
             const contentDiv = document.getElementById('templateContent');
             const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
@@ -1136,21 +1494,20 @@
                 copyBtn.disabled = true;
                 downloadBtn.disabled = true;
             } else {
-                contentDiv.textContent = template.trim();
+                contentDiv.textContent = finalTemplate;
                 copyBtn.disabled = false;
                 downloadBtn.disabled = false;
-                updateCharCount(template.length);
-                addToHistory(template);
+                updateCharCount(finalTemplate.length);
+                recordUsage();
             }
         }
 
-        function updateStats() {
-            document.getElementById('reasonCount').textContent = state.selectedReasons.length;
-            document.getElementById('docCount').textContent = state.selectedDocuments.length;
-        }
-
-        function updateCharCount(count) {
-            document.getElementById('charCount').textContent = `${count} символов`;
+        function replaceVariables(text) {
+            let result = text;
+            Object.entries(state.variables).forEach(([key, value]) => {
+                result = result.replace(new RegExp(`{{${key}}}`, 'g'), value);
+            });
+            return result;
         }
 
         function copyTemplate() {
@@ -1159,6 +1516,7 @@
                 const btn = document.getElementById('copyBtn');
                 const originalText = btn.textContent;
                 btn.textContent = '✓ Скопировано!';
+                createConfetti();
                 setTimeout(() => {
                     btn.textContent = originalText;
                 }, 2000);
@@ -1176,19 +1534,121 @@
             document.body.removeChild(element);
         }
 
-        function addToHistory(template) {
-            if (template.trim()) {
-                state.history.unshift({
-                    text: template.substring(0, 100),
-                    fullText: template,
-                    timestamp: new Date().toLocaleString()
+        function updateCharCount(count) {
+            document.getElementById('charCount').textContent = `${count} символов`;
+        }
+
+        function recordUsage() {
+            const today = new Date().toLocaleDateString();
+            const combination = state.selectedReasons.sort().join('|');
+
+            if (!state.stats[today]) state.stats[today] = 0;
+            state.stats[today]++;
+
+            if (!state.combinations[combination]) state.combinations[combination] = 0;
+            state.combinations[combination]++;
+
+            localStorage.setItem('emailStats', JSON.stringify(state.stats));
+            localStorage.setItem('combinations', JSON.stringify(state.combinations));
+        }
+
+        function updateStats() {
+            document.getElementById('reasonCount').textContent = state.selectedReasons.length;
+            document.getElementById('docCount').textContent = state.selectedDocuments.length;
+        }
+
+        function saveVariant() {
+            const name = document.getElementById('variantName').value;
+            const text = document.getElementById('variantText').value;
+
+            if (!name || !text) {
+                alert('Заполните все поля!');
+                return;
+            }
+
+            state.variants.push({ name, text, created: new Date().toLocaleString() });
+            localStorage.setItem('emailVariants', JSON.stringify(state.variants));
+
+            document.getElementById('variantName').value = '';
+            document.getElementById('variantText').value = '';
+            updateVariantsList();
+        }
+
+        function updateVariantsList() {
+            const container = document.getElementById('variantsList');
+            container.innerHTML = '';
+
+            state.variants.forEach((variant, index) => {
+                const item = document.createElement('div');
+                item.className = 'variant-item';
+                item.innerHTML = `
+                    <div class="variant-name">${variant.name}</div>
+                    <div class="variant-text">${variant.text}</div>
+                    <button class="variant-delete" onclick="deleteVariant(${index})">
+                        <i class="fas fa-trash"></i> Удалить
+                    </button>
+                `;
+                item.addEventListener('click', () => {
+                    document.getElementById('variantText').value = variant.text;
                 });
-                if (state.history.length > 20) state.history.pop();
-                localStorage.setItem('emailHistory', JSON.stringify(state.history));
+                container.appendChild(item);
+            });
+
+            if (state.variants.length === 0) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.6;">Нет сохранённых вариантов</p>';
             }
         }
 
-        function updateHistory() {
+        function deleteVariant(index) {
+            state.variants.splice(index, 1);
+            localStorage.setItem('emailVariants', JSON.stringify(state.variants));
+            updateVariantsList();
+        }
+
+        function addVariable() {
+            const name = document.getElementById('varName').value;
+            const value = document.getElementById('varValue').value;
+
+            if (!name || !value) {
+                alert('Заполните все поля!');
+                return;
+            }
+
+            state.variables[name] = value;
+            localStorage.setItem('emailVariables', JSON.stringify(state.variables));
+
+            document.getElementById('varName').value = '';
+            document.getElementById('varValue').value = '';
+            updateVariablesList();
+            updateTemplate();
+        }
+
+        function updateVariablesList() {
+            const container = document.getElementById('variablesList');
+            container.innerHTML = '';
+
+            Object.entries(state.variables).forEach(([key, value]) => {
+                const item = document.createElement('div');
+                item.className = 'variant-item';
+                item.innerHTML = `
+                    <div class="variant-name">{{${key}}}</div>
+                    <div class="variant-text">Значение: ${value}</div>
+                    <button class="variant-delete" onclick="deleteVariable('${key}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function deleteVariable(key) {
+            delete state.variables[key];
+            localStorage.setItem('emailVariables', JSON.stringify(state.variables));
+            updateVariablesList();
+            updateTemplate();
+        }
+
+        function updateHistoryList() {
             const container = document.getElementById('historyList');
             container.innerHTML = '';
 
@@ -1199,11 +1659,13 @@
 
             state.history.forEach((item, index) => {
                 const div = document.createElement('div');
-                div.className = 'history-item';
+                div.className = 'variant-item';
                 div.innerHTML = `
-                    <div class="history-item-text">${item.text}...</div>
-                    <div class="history-item-time">${item.timestamp}</div>
-                    <button class="history-item-delete" onclick="deleteHistoryItem(${index})">✕</button>
+                    <div class="variant-name">${item.timestamp}</div>
+                    <div class="variant-text">${item.fullText.substring(0, 100)}...</div>
+                    <button class="variant-delete" onclick="deleteHistoryItem(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 `;
                 div.addEventListener('click', () => {
                     document.getElementById('templateContent').textContent = item.fullText;
@@ -1217,71 +1679,65 @@
         function deleteHistoryItem(index) {
             state.history.splice(index, 1);
             localStorage.setItem('emailHistory', JSON.stringify(state.history));
-            updateHistory();
+            updateHistoryList();
         }
 
         function clearHistory() {
             if (confirm('Вы уверены?')) {
                 state.history = [];
                 localStorage.setItem('emailHistory', JSON.stringify(state.history));
-                updateHistory();
+                updateHistoryList();
             }
         }
 
-        function renderTemplates() {
-            const grid = document.getElementById('templatesGrid');
-            grid.innerHTML = '';
+        function renderStatsChart() {
+            const dates = Object.keys(state.stats).sort();
+            const values = dates.map(date => state.stats[date]);
 
-            data.templates.forEach(template => {
-                const card = document.createElement('div');
-                card.className = 'template-card';
-                card.innerHTML = `
-                    <div class="template-card-title">${template.name}</div>
-                    <div class="template-card-desc">${template.reasons.length} причин, ${template.docs.length} документов</div>
-                `;
-                card.addEventListener('click', () => {
-                    applyTemplate(template);
-                });
-                grid.appendChild(card);
-            });
-        }
+            const ctx = document.getElementById('statsChart');
+            if (!ctx) return;
 
-        function applyTemplate(template) {
-            state.selectedReasons = template.reasons;
-            state.selectedDocuments = [];
-            
-            template.docs.forEach(docId => {
-                const [typeKey, subtypeKey] = docId.split('-');
-                const subtypeData = data.documentTypes[typeKey].subtypes[subtypeKey];
-                state.selectedDocuments.push({
-                    id: docId,
-                    typeKey: typeKey,
-                    subtypeKey: subtypeKey,
-                    data: subtypeData
-                });
+            if (statsChart) statsChart.destroy();
+
+            statsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Писем за день',
+                        data: values,
+                        borderColor: '#0969da',
+                        backgroundColor: 'rgba(9, 105, 218, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
             });
 
-            document.querySelectorAll('[data-reason]').forEach(btn => {
-                btn.classList.toggle('selected', state.selectedReasons.includes(btn.dataset.reason));
-            });
-
-            updateSelectedReasons();
-            updateSelectedDocuments();
-            updateTemplate();
-            updateStats();
-            document.getElementById('documentTypesSection').classList.remove('disabled-section');
-            closeModal('templatesModal');
+            renderTopCombinations();
+            updateStatsNumbers();
         }
 
-        function openModal(id) {
-            document.getElementById(id).classList.add('show');
-        }
+        function renderTopCombinations() {
+            const container = document.getElementById('topCombinations');
+            container.innerHTML = '';
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
-        }
+            const sorted = Object.entries(state.combinations)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
 
-        window.addEventListener('DOMContentLoaded', init);
-    </script>
-</body>
-</html>
+            if (sorted.length === 0) {
+                container.innerHTML = '<p style="opacity: 0.6;">Нет данных</p>';
+                return;
+            }
+
+            sorted.forEach(([combo, count]) => {
+                const reasons = combo.split('|').map(r => data.reasonLabels[r] || r).join(', ');
+                const div =
