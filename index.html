@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Конструктор писем клиентам</title>
+    <title>🚀 Email Constructor Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -11,174 +12,301 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #0969da;
+            --primary-dark: #0860ca;
+            --secondary: #6e40aa;
+            --success: #1a7f64;
+            --danger: #da3633;
+            --warning: #d29922;
+            --bg-light: #ffffff;
+            --bg-gray: #f6f8fa;
+            --bg-dark: #0d1117;
+            --text-primary: #0d1117;
+            --text-secondary: #666;
+            --border: #e1e4e8;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            transition: background 0.3s;
         }
 
-        .main-wrapper {
-            display: flex;
-            height: calc(100vh - 40px);
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
 
-        /* LEFT PANEL */
-        .left-panel {
-            flex: 1;
-            overflow-y: auto;
-            padding: 40px;
-            border-right: 1px solid #e1e4e8;
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
         }
 
-        .header-section {
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e1e4e8;
-        }
-
-        .header-section h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #0d1117;
-            margin-bottom: 8px;
-        }
-
-        .header-section p {
-            color: #666;
-            font-size: 15px;
-        }
-
-        .section {
-            margin-bottom: 35px;
-        }
-
-        .section-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #0d1117;
-            margin-bottom: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            opacity: 0.8;
-        }
-
-        /* Language Buttons */
-        .language-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .lang-btn {
-            flex: 1;
-            padding: 12px 16px;
-            border: 1px solid #d0d7de;
-            background: #f6f8fa;
-            color: #0d1117;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .lang-btn:hover {
-            border-color: #0969da;
-            background: #f3f5f7;
-            color: #0969da;
-        }
-
-        .lang-btn.active {
-            background: #0969da;
-            color: white;
-            border-color: #0969da;
-        }
-
-        /* Reasons Grid */
-        .reasons-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .reason-btn {
-            padding: 14px 16px;
-            border: 1px solid #d0d7de;
-            background: #f6f8fa;
-            color: #0d1117;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            text-align: left;
-            transition: all 0.2s;
-        }
-
-        .reason-btn:hover {
-            border-color: #0969da;
-            background: #f3f5f7;
-            color: #0969da;
-        }
-
-        .reason-btn.selected {
-            background: #0969da;
-            color: white;
-            border-color: #0969da;
-        }
-
-        /* Document Types */
-        .document-type-btn {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #d0d7de;
-            background: #f6f8fa;
-            color: #0d1117;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            text-align: left;
-            transition: all 0.2s;
+        /* HEADER */
+        .app-header {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        body.dark-mode .app-header {
+            background: #1e1e2e;
+            color: #fff;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: var(--bg-gray);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        body.dark-mode .icon-btn {
+            background: #2a2a3e;
+            border-color: #404050;
+            color: #fff;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* MAIN GRID */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .panel {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .panel {
+            background: #1e1e2e;
+            color: #fff;
+        }
+
+        .panel:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .panel-header {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .panel-header {
+            border-bottom-color: #404050;
+        }
+
+        .panel-header-icon {
+            font-size: 20px;
+        }
+
+        /* LANGUAGE SELECTOR */
+        .language-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .lang-btn {
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-gray);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .lang-btn {
+            background: #2a2a3e;
+            border-color: #404050;
+            color: #fff;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(9, 105, 218, 0.4);
+        }
+
+        /* REASONS SECTION */
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .reason-card {
+            padding: 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        body.dark-mode .reason-card {
+            background: #2a2a3e;
+            border-color: #404050;
+        }
+
+        .reason-card:hover {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.05), rgba(110, 64, 170, 0.05));
+            transform: translateX(4px);
+        }
+
+        .reason-card.selected {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(9, 105, 218, 0.4);
+        }
+
+        .reason-card::before {
+            content: '✓';
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+            width: 24px;
+            text-align: center;
+        }
+
+        .reason-card.selected::before {
+            opacity: 1;
+        }
+
+        /* DOCUMENT TYPES */
+        .document-section {
+            margin-top: 20px;
+        }
+
+        .document-type-btn {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        body.dark-mode .document-type-btn {
+            background: #2a2a3e;
+            border-color: #404050;
         }
 
         .document-type-btn:hover {
-            border-color: #0969da;
-            background: #f3f5f7;
-            color: #0969da;
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.05), rgba(110, 64, 170, 0.05));
         }
 
         .document-type-btn.open {
-            border-color: #0969da;
-            background: #f3f5f7;
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(110, 64, 170, 0.1));
         }
 
         .toggle-icon {
-            transition: transform 0.2s;
-            font-size: 12px;
+            transition: transform 0.3s;
+            font-size: 14px;
         }
 
         .document-type-btn.open .toggle-icon {
             transform: rotate(180deg);
         }
 
-        /* Subtypes */
         .subtypes-container {
             display: none;
             margin-bottom: 12px;
             padding: 12px;
-            background: #f6f8fa;
-            border-radius: 6px;
-            border-left: 3px solid #0969da;
+            background: var(--bg-gray);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
             grid-template-columns: 1fr 1fr;
             gap: 8px;
+        }
+
+        body.dark-mode .subtypes-container {
+            background: #2a2a3e;
         }
 
         .subtypes-container.show {
@@ -187,47 +315,57 @@
 
         .subtype-btn {
             padding: 10px 12px;
-            border: 1px solid #d0d7de;
+            border: 1px solid var(--border);
             background: white;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            color: #0d1117;
-            text-align: center;
             transition: all 0.2s;
         }
 
+        body.dark-mode .subtype-btn {
+            background: #1e1e2e;
+            border-color: #404050;
+            color: #fff;
+        }
+
         .subtype-btn:hover {
-            border-color: #0969da;
-            background: #f3f5f7;
-            color: #0969da;
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(110, 64, 170, 0.1));
+            transform: scale(1.02);
         }
 
         .subtype-btn.selected {
-            background: #0969da;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            border-color: #0969da;
+            border-color: transparent;
         }
 
-        /* Selected Items */
+        /* SELECTED ITEMS */
         .selected-items {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .badge {
-            background: #ddf4ff;
-            color: #0969da;
-            padding: 6px 10px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.15), rgba(110, 64, 170, 0.15));
+            color: var(--primary);
+            padding: 8px 12px;
+            border-radius: 20px;
             font-size: 12px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            border: 1px solid #b6e3ff;
+            border: 1px solid rgba(9, 105, 218, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        body.dark-mode .badge {
+            background: rgba(9, 105, 218, 0.2);
+            color: #4da3ff;
         }
 
         .badge .remove {
@@ -238,7 +376,7 @@
             background: none;
             border: none;
             padding: 0;
-            font-size: 12px;
+            font-size: 14px;
             line-height: 1;
         }
 
@@ -246,163 +384,478 @@
             opacity: 1;
         }
 
-        .disabled-section {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        /* RIGHT PANEL */
-        .right-panel {
-            flex: 0 0 45%;
-            background: #f6f8fa;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
+        /* TEMPLATE PREVIEW */
         .template-box {
-            background: white;
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            border-radius: 12px;
             padding: 0;
             display: flex;
             flex-direction: column;
             height: 100%;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow);
+        }
+
+        body.dark-mode .template-box {
+            background: #1e1e2e;
+            border-color: #404050;
         }
 
         .template-header {
             padding: 16px;
-            border-bottom: 1px solid #e1e4e8;
-            font-size: 14px;
+            border-bottom: 2px solid var(--border);
             font-weight: 700;
-            color: #0d1117;
-            background: #f6f8fa;
+            background: var(--bg-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .template-header {
+            background: #2a2a3e;
+            border-color: #404050;
         }
 
         .template-content {
             padding: 16px;
             flex: 1;
             font-size: 13px;
-            line-height: 1.6;
-            color: #333;
+            line-height: 1.8;
+            color: var(--text-primary);
             white-space: pre-wrap;
             word-wrap: break-word;
             overflow-y: auto;
-            font-family: 'Courier New', monospace;
+            font-family: 'Monaco', 'Courier New', monospace;
             background: #fafbfc;
+            position: relative;
+        }
+
+        body.dark-mode .template-content {
+            background: #141420;
+            color: #e0e0e0;
         }
 
         .template-empty {
-            color: #999;
+            color: var(--text-secondary);
             font-style: italic;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100%;
+            opacity: 0.6;
         }
 
-        .copy-button {
-            padding: 12px 16px;
-            background: #0969da;
+        .template-actions {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            border-top: 2px solid var(--border);
+            background: var(--bg-gray);
+        }
+
+        body.dark-mode .template-actions {
+            background: #2a2a3e;
+            border-color: #404050;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--primary);
             color: white;
             border: none;
-            border-top: 1px solid #e1e4e8;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .copy-button:hover:not(:disabled) {
-            background: #0860ca;
+        .action-btn:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(9, 105, 218, 0.4);
         }
 
-        .copy-button:disabled {
-            background: #6e7681;
+        .action-btn:disabled {
+            background: #ccc;
             cursor: not-allowed;
             opacity: 0.6;
         }
 
+        .action-btn.secondary {
+            background: var(--secondary);
+        }
+
+        .action-btn.secondary:hover:not(:disabled) {
+            background: #5e38a1;
+        }
+
+        /* HISTORY PANEL */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 12px;
+            background: var(--bg-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid var(--border);
+            position: relative;
+        }
+
+        body.dark-mode .history-item {
+            background: #2a2a3e;
+        }
+
+        .history-item:hover {
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(110, 64, 170, 0.1));
+            border-left-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .history-item-text {
+            font-size: 12px;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: pre-wrap;
+            opacity: 0.8;
+        }
+
+        .history-item-time {
+            font-size: 10px;
+            opacity: 0.5;
+            margin-top: 6px;
+        }
+
+        .history-item-delete {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 10px;
+        }
+
+        .history-item:hover .history-item-delete {
+            opacity: 1;
+        }
+
+        /* TEMPLATES MODAL */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .template-card {
+            padding: 14px;
+            background: var(--bg-gray);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .template-card {
+            background: #2a2a3e;
+            border-color: #404050;
+        }
+
+        .template-card:hover {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(110, 64, 170, 0.1));
+            transform: translateX(4px);
+        }
+
+        .template-card-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .template-card-desc {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 28px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        body.dark-mode .modal-content {
+            background: #1e1e2e;
+            color: #fff;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        /* ANIMATIONS */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .app-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .language-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* SCROLLBAR */
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: var(--bg-gray);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #d0d7de;
-            border-radius: 3px;
+            background: var(--border);
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #0969da;
+            background: var(--primary);
         }
 
-        @media (max-width: 900px) {
-            .main-wrapper {
-                flex-direction: column;
-                height: auto;
-            }
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #2a2a3e;
+        }
 
-            .left-panel {
-                border-right: none;
-                border-bottom: 1px solid #e1e4e8;
-            }
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: #404050;
+        }
 
-            .right-panel {
-                flex: none;
-                min-height: 300px;
-            }
+        .disabled-section {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <!-- LEFT PANEL -->
-        <div class="left-panel">
-            <div class="header-section">
-                <h1>📧 Конструктор писем</h1>
-                <p>Выберите параметры письма клиентам</p>
+    <div class="app-container">
+        <!-- HEADER -->
+        <div class="app-header">
+            <div class="app-title">
+                <span>🚀</span>
+                <span>Email Constructor Pro</span>
             </div>
+            <div class="app-controls">
+                <button class="icon-btn" id="templatesBtn" title="Шаблоны">
+                    <i class="fas fa-file-alt"></i>
+                </button>
+                <button class="icon-btn" id="historyBtn" title="История">
+                    <i class="fas fa-history"></i>
+                </button>
+                <button class="icon-btn" id="settingsBtn" title="Настройки">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="icon-btn" id="darkModeBtn" title="Темная тема">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
 
-            <!-- Language -->
-            <div class="section">
-                <div class="section-title">🌐 Язык</div>
-                <div class="language-buttons">
-                    <button class="lang-btn active" data-language="ru">🇷🇺 Русский</button>
-                    <button class="lang-btn" data-language="en">🇬🇧 Английский</button>
+        <!-- MAIN GRID -->
+        <div class="main-grid">
+            <!-- ЛЕВАЯ ПАНЕЛЬ -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span><span class="panel-header-icon">🌐</span> Язык</span>
                 </div>
-            </div>
+                <div class="language-selector">
+                    <button class="lang-btn active" data-language="ru">🇷🇺 Русский</button>
+                    <button class="lang-btn" data-language="en">🇬🇧 English</button>
+                </div>
 
-            <!-- Reasons -->
-            <div class="section">
-                <div class="section-title">❌ Причины</div>
+                <div class="panel-header">
+                    <span><span class="panel-header-icon">❌</span> Причины</span>
+                </div>
                 <div class="reasons-grid" id="reasonsContainer"></div>
                 <div class="selected-items" id="selectedReasons"></div>
             </div>
 
-            <!-- Documents -->
-            <div class="section" id="documentTypesSection" class="disabled-section">
-                <div class="section-title">📄 Документы</div>
-                <div id="documentContent"></div>
-                <div class="selected-items" id="selectedDocuments"></div>
+            <!-- СРЕДНЯЯ ПАНЕЛЬ -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span><span class="panel-header-icon">📄</span> Документы</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="reasonCount">0</div>
+                        <div class="stat-label">Причин выбрано</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="docCount">0</div>
+                        <div class="stat-label">Документов</div>
+                    </div>
+                </div>
+                <div class="document-section" id="documentTypesSection" class="disabled-section">
+                    <div id="documentContent"></div>
+                    <div class="selected-items" id="selectedDocuments"></div>
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ ПАНЕЛЬ -->
+            <div class="panel">
+                <div class="template-box">
+                    <div class="template-header">
+                        <span><span class="panel-header-icon">📋</span> Шаблон письма</span>
+                        <span id="charCount" style="font-size: 12px; opacity: 0.7;">0 символов</span>
+                    </div>
+                    <div class="template-content" id="templateContent">
+                        <span class="template-empty">Выберите причины и документы</span>
+                    </div>
+                    <div class="template-actions">
+                        <button class="action-btn" id="copyBtn" disabled>
+                            <i class="fas fa-copy"></i> Копировать
+                        </button>
+                        <button class="action-btn secondary" id="downloadBtn" disabled>
+                            <i class="fas fa-download"></i> Скачать
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- RIGHT PANEL -->
-        <div class="right-panel">
-            <div class="template-box">
-                <div class="template-header">📋 Шаблон письма</div>
-                <div class="template-content" id="templateContent">
-                    <span class="template-empty">Выберите причины и документы</span>
-                </div>
-                <button class="copy-button" id="copyBtn" disabled>📋 Копировать</button>
-            </div>
+    <!-- MODALS -->
+    <div class="modal" id="templatesModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('templatesModal')">✕</button>
+            <h2 style="margin-bottom: 20px;">📋 Готовые шаблоны</h2>
+            <div class="templates-grid" id="templatesGrid"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('historyModal')">✕</button>
+            <h2 style="margin-bottom: 20px;">📜 История писем</h2>
+            <div class="history-list" id="historyList"></div>
+            <button class="action-btn" style="width: 100%; margin-top: 20px;" onclick="clearHistory()">
+                <i class="fas fa-trash"></i> Очистить историю
+            </button>
         </div>
     </div>
 
@@ -410,11 +863,11 @@
         const data = {
             reasons: {
                 'digital_document': {
-                    ru: 'Мы не можем принять предоставленный Вами документ, так как сканированные копии документов / снимки экрана / электронные документы не идентифицируются. К проверке могут быть приняты только фотографии оригиналов документов.',
+                    ru: 'Мы не можем принять предоставленный Вами документ, так как сканированные копии документов / снимки экрана / электронные документы не идентифицируются. К проверке могут быть при��яты только фотографии оригиналов документов.',
                     en: 'We cannot accept the document you have provided, as scanned copies of documents/screenshots/electronic documents are not identifiable. Only photographs of original documents can be accepted for verification.'
                 },
                 'under_1mb': {
-                    ru: 'К сож��лению, мы не можем принять приложенную Вами фотографию, так как размер файла должен быть не менее 1 MB.',
+                    ru: 'К сожалению, мы не можем принять приложенную Вами фотографию, так как размер файла должен быть не менее 1 MB.',
                     en: 'Unfortunately, we cannot accept the photo you have attached, as the file size must be at least 1 MB.'
                 },
                 'cropped': {
@@ -424,13 +877,18 @@
                 'low_quality': {
                     ru: 'К сожалению, мы не можем принять : фотография предоставлена в низком качестве.',
                     en: 'Unfortunately, we cannot accept this: the photo is of poor quality.'
+                },
+                'wrong_person': {
+                    ru: 'Документ должен принадлежать именно вам. На фото должны быть видны ваши черты лица.',
+                    en: 'The document must belong to you. Your facial features must be visible in the photo.'
                 }
             },
             reasonLabels: {
                 'digital_document': 'Digital document',
                 'under_1mb': 'Under 1MB',
                 'cropped': 'Cropped',
-                'low_quality': 'Low quality'
+                'low_quality': 'Low quality',
+                'wrong_person': 'Wrong person'
             },
             documentTypes: {
                 'photo_id': {
@@ -445,22 +903,35 @@
                             label: 'TP',
                             ru: '• страницу заграничного паспорта с фотографией (с номером и серией);',
                             en: '• the page of your foreign passport with your photo (with the number and series);'
+                        },
+                        'license': {
+                            label: 'DL',
+                            ru: '• водительское удостоверение с фотографией;',
+                            en: '• driver\'s license with your photo;'
                         }
                     }
                 }
-            }
+            },
+            templates: [
+                { name: 'Стандартное письмо', reasons: ['digital_document'], docs: ['photo_id-p'] },
+                { name: 'Полная проверка', reasons: ['digital_document', 'low_quality'], docs: ['photo_id-p', 'photo_id-tp'] },
+                { name: 'Срочная переподача', reasons: ['cropped', 'under_1mb'], docs: ['photo_id-p'] }
+            ]
         };
 
         let state = {
             language: 'ru',
             selectedReasons: [],
-            selectedDocuments: []
+            selectedDocuments: [],
+            history: JSON.parse(localStorage.getItem('emailHistory')) || []
         };
 
         function init() {
             renderReasons();
             renderDocumentTypes();
             setupEventListeners();
+            renderTemplates();
+            updateHistory();
         }
 
         function setupEventListeners() {
@@ -472,6 +943,27 @@
                     updateTemplate();
                 });
             });
+
+            document.getElementById('darkModeBtn').addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            });
+
+            document.getElementById('historyBtn').addEventListener('click', () => {
+                openModal('historyModal');
+                updateHistory();
+            });
+
+            document.getElementById('templatesBtn').addEventListener('click', () => {
+                openModal('templatesModal');
+            });
+
+            document.getElementById('copyBtn').addEventListener('click', copyTemplate);
+            document.getElementById('downloadBtn').addEventListener('click', downloadTemplate);
+
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
         }
 
         function renderReasons() {
@@ -480,7 +972,7 @@
 
             Object.entries(data.reasonLabels).forEach(([key, label]) => {
                 const btn = document.createElement('button');
-                btn.className = 'reason-btn';
+                btn.className = 'reason-card';
                 btn.textContent = label;
                 btn.dataset.reason = key;
 
@@ -504,6 +996,7 @@
 
                     updateSelectedReasons();
                     updateTemplate();
+                    updateStats();
                 });
 
                 container.appendChild(btn);
@@ -567,6 +1060,7 @@
 
             updateSelectedDocuments();
             updateTemplate();
+            updateStats();
         }
 
         function updateSelectedReasons() {
@@ -586,6 +1080,7 @@
                     document.querySelector(`[data-reason="${reasonKey}"]`).classList.remove('selected');
                     updateSelectedReasons();
                     updateTemplate();
+                    updateStats();
                 });
 
                 container.appendChild(badge);
@@ -608,6 +1103,7 @@
                     state.selectedDocuments = state.selectedDocuments.filter(d => d.id !== doc.id);
                     updateSelectedDocuments();
                     updateTemplate();
+                    updateStats();
                 });
 
                 container.appendChild(badge);
@@ -633,27 +1129,157 @@
 
             const contentDiv = document.getElementById('templateContent');
             const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
 
             if (template.trim() === '') {
                 contentDiv.innerHTML = '<span class="template-empty">Выберите причины и документы</span>';
                 copyBtn.disabled = true;
+                downloadBtn.disabled = true;
             } else {
                 contentDiv.textContent = template.trim();
                 copyBtn.disabled = false;
+                downloadBtn.disabled = false;
+                updateCharCount(template.length);
+                addToHistory(template);
             }
         }
 
-        document.getElementById('copyBtn').addEventListener('click', function() {
+        function updateStats() {
+            document.getElementById('reasonCount').textContent = state.selectedReasons.length;
+            document.getElementById('docCount').textContent = state.selectedDocuments.length;
+        }
+
+        function updateCharCount(count) {
+            document.getElementById('charCount').textContent = `${count} символов`;
+        }
+
+        function copyTemplate() {
             const text = document.getElementById('templateContent').textContent;
             navigator.clipboard.writeText(text).then(() => {
-                const btn = this;
+                const btn = document.getElementById('copyBtn');
                 const originalText = btn.textContent;
                 btn.textContent = '✓ Скопировано!';
                 setTimeout(() => {
                     btn.textContent = originalText;
                 }, 2000);
             });
-        });
+        }
+
+        function downloadTemplate() {
+            const text = document.getElementById('templateContent').textContent;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', `email-${new Date().getTime()}.txt`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function addToHistory(template) {
+            if (template.trim()) {
+                state.history.unshift({
+                    text: template.substring(0, 100),
+                    fullText: template,
+                    timestamp: new Date().toLocaleString()
+                });
+                if (state.history.length > 20) state.history.pop();
+                localStorage.setItem('emailHistory', JSON.stringify(state.history));
+            }
+        }
+
+        function updateHistory() {
+            const container = document.getElementById('historyList');
+            container.innerHTML = '';
+
+            if (state.history.length === 0) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.6;">История пуста</p>';
+                return;
+            }
+
+            state.history.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div class="history-item-text">${item.text}...</div>
+                    <div class="history-item-time">${item.timestamp}</div>
+                    <button class="history-item-delete" onclick="deleteHistoryItem(${index})">✕</button>
+                `;
+                div.addEventListener('click', () => {
+                    document.getElementById('templateContent').textContent = item.fullText;
+                    updateCharCount(item.fullText.length);
+                    closeModal('historyModal');
+                });
+                container.appendChild(div);
+            });
+        }
+
+        function deleteHistoryItem(index) {
+            state.history.splice(index, 1);
+            localStorage.setItem('emailHistory', JSON.stringify(state.history));
+            updateHistory();
+        }
+
+        function clearHistory() {
+            if (confirm('Вы уверены?')) {
+                state.history = [];
+                localStorage.setItem('emailHistory', JSON.stringify(state.history));
+                updateHistory();
+            }
+        }
+
+        function renderTemplates() {
+            const grid = document.getElementById('templatesGrid');
+            grid.innerHTML = '';
+
+            data.templates.forEach(template => {
+                const card = document.createElement('div');
+                card.className = 'template-card';
+                card.innerHTML = `
+                    <div class="template-card-title">${template.name}</div>
+                    <div class="template-card-desc">${template.reasons.length} причин, ${template.docs.length} документов</div>
+                `;
+                card.addEventListener('click', () => {
+                    applyTemplate(template);
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        function applyTemplate(template) {
+            state.selectedReasons = template.reasons;
+            state.selectedDocuments = [];
+            
+            template.docs.forEach(docId => {
+                const [typeKey, subtypeKey] = docId.split('-');
+                const subtypeData = data.documentTypes[typeKey].subtypes[subtypeKey];
+                state.selectedDocuments.push({
+                    id: docId,
+                    typeKey: typeKey,
+                    subtypeKey: subtypeKey,
+                    data: subtypeData
+                });
+            });
+
+            document.querySelectorAll('[data-reason]').forEach(btn => {
+                btn.classList.toggle('selected', state.selectedReasons.includes(btn.dataset.reason));
+            });
+
+            updateSelectedReasons();
+            updateSelectedDocuments();
+            updateTemplate();
+            updateStats();
+            document.getElementById('documentTypesSection').classList.remove('disabled-section');
+            closeModal('templatesModal');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
 
         window.addEventListener('DOMContentLoaded', init);
     </script>
